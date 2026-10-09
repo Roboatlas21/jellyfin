@@ -40,6 +40,17 @@ namespace Jellyfin.Api.Tests.Controllers
         }
 
         [Theory]
+        [InlineData("mp4", false, 0, "make_zero")]
+        [InlineData("MP4", false, 0, "make_zero")]
+        [InlineData("mp4", false, 2, "disabled")]
+        [InlineData("mp4", true, 0, "disabled")]
+        [InlineData("ts", false, 0, "disabled")]
+        public void GetAvoidNegativeTimestampMode_OnlyShiftsInitialFmp4Vod(string container, bool isEvent, int startNumber, string expected)
+        {
+            Assert.Equal(expected, DynamicHlsController.GetAvoidNegativeTimestampMode(container, isEvent, startNumber));
+        }
+
+        [Theory]
         [MemberData(nameof(GetSegmentLengths_Success_TestData))]
         public void GetSegmentLengths_Success(long runtimeTicks, int segmentlength, double[] expected)
         {
